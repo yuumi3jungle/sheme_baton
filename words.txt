@@ -1,0 +1,6 @@
+(heap "積み重ねた物")
+(exploration "探査、探検")
+(errand "使いっ走り")
+(defect "欠点")
+(allowance "割当量")
+
