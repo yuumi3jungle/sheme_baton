@@ -47,34 +47,36 @@
                (w center)
                (set @window w)
                (w makeKeyAndOrderFront:self))
-	           (set @words (Words wordsWithResorceFile:"words" ofType:"txt"))
-	           (@words sortByNg)
-               (@englishText setStringValue:(((@words top) car) stringValue))
+          (self main)
           self)
 
-      (- nextWords is
-            (@words writeToResorceFile:"words" ofType:"txt")
-    	    (@words next)
-    	    (if (@words isEnd)
-    	        (then
-    	         (self terminate:nil))
-    	        (else 
-                 (@englishText setStringValue:(((@words top) car) stringValue))
-    	            (@japaneseText setStringValue:"")
-    	            (@yesButton setEnabled:nil)
-    	            (@noButton  setEnabled:nil))))
      
-     (- check:sender is 
-     	(@japaneseText setStringValue:(((@words top) cadr) stringValue))
-	    (@yesButton setEnabled:t)
-	    (@noButton  setEnabled:t))
+     (- check:sender is (@check_proc))
 
-     (- yes:sender is
-     	(@words setOk)
-     	(self nextWords))
+     (- yes:sender is (@answer_proc t))
 	
-    (- no:sender is
-        (@words setNg)
-      	(self nextWords))
+     (- no:sender is (@answer_proc nil))
+      	
+     (- main is
+        (let ((words (Words wordsWithResorceFile:"words" ofType:"txt")))
+             (words sortByNg)
+             (@englishText setStringValue:(((words top) car) stringValue))
+             (set @check_proc (do ()
+          	    (@japaneseText setStringValue:(((words top) cadr) stringValue))
+     	        (@yesButton setEnabled:t)
+     	        (@noButton  setEnabled:t)))
+             (set @answer_proc (do (yn)
+                (if yn (then (words setOk)) (else (words setNg)))
+                (words writeToResorceFile:"words" ofType:"txt")
+          	    (words next)
+          	    (if (words isEnd)
+          	        (then
+          	            (self terminate:nil))
+          	        (else 
+                        (@englishText setStringValue:(((words top) car) stringValue))
+          	            (@japaneseText setStringValue:"")
+          	            (@yesButton setEnabled:nil)
+          	            (@noButton  setEnabled:nil)))))))
+
      
 )
