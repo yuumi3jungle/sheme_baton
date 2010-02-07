@@ -27,12 +27,12 @@
                          (set @checkButton b))
                     (let (b (standard-cocoa-button '(280 20 58 32)))
                          (b set: (title: "Yes" target: self action:"yes:"))
-			 (b setEnabled:nil)
+			             (b setEnabled:nil)
                          (v addSubview:b)
                          (set @yesButton b))
                     (let (b (standard-cocoa-button '(340 20 58 32)))
                          (b set: (title: "No" target: self action:"no:"))
-			 (b setEnabled:nil)
+			             (b setEnabled:nil)
                          (v addSubview:b)
                          (set @noButton b))
                     (let (t (standard-cocoa-textfield '(50 66 200 22)))
@@ -47,22 +47,32 @@
                (w center)
                (set @window w)
                (w makeKeyAndOrderFront:self))
-	       (set @words (Words wordsWithFile:"/tmp/words.txt"))
+	           (set @words (Words wordsWithResorceFile:"words" ofType:"txt"))
                (@englishText setStringValue:(((@words top) car) stringValue))
           self)
+
+      (- nextWords is
+            (@words writeToResorceFile:"words" ofType:"txt")
+    	    (@words next)
+    	    (if (@words isEnd)
+    	        (then nil)
+    	        (else 
+                 (@englishText setStringValue:(((@words top) car) stringValue))
+    	            (@japaneseText setStringValue:"")
+    	            (@yesButton setEnabled:nil)
+    	            (@noButton  setEnabled:nil))))
      
      (- check:sender is 
      	(@japaneseText setStringValue:(((@words top) cadr) stringValue))
-	(@yesButton setEnabled:t)
-	(@noButton  setEnabled:t))
+	    (@yesButton setEnabled:t)
+	    (@noButton  setEnabled:t))
 
      (- yes:sender is
      	(@words setOk)
-	(@words next)
-        (@englishText setStringValue:(((@words top) car) stringValue))
-	(@japaneseText setStringValue:"")
-	(@yesButton setEnabled:nil)
-	(@noButton  setEnabled:nil))
+     	(self nextWords))
 	
-     (- no:sender is nil)
+    (- no:sender is
+        (@words setNg)
+      	(self nextWords))
+     
 )

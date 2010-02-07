@@ -12,7 +12,10 @@
 (class ApplicationDelegate is NSObject
      (imethod (void) applicationDidFinishLaunching: (id) sender is
           (build-menu default-application-menu "WordsApp")
-          (set $random ((WordsAppWindowController alloc) init))))
+          (set $random ((WordsAppWindowController alloc) init)))
+     (imethod (BOOL) applicationShouldTerminateAfterLastWindowClosed: (id) theApplication is
+         1)
+)
 
 ;; install the delegate and keep a reference to it since the application won't retain it.
 ((NSApplication sharedApplication) setDelegate:(set delegate ((ApplicationDelegate alloc) init)))
