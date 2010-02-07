@@ -1,7 +1,7 @@
 ;; Nukefile for Nu demo application
 
 ;; source files
-(set @nu_files 	  (filelist "^nu/.*nu$"))
+(set @nu_files 	  (filelist "^nu/(.*nu|.*txt)$"))
 
 ;; application description
 (set @application 	       	   "WordsApp")

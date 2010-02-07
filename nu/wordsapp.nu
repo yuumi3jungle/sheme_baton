@@ -36,11 +36,11 @@
                          (v addSubview:b)
                          (set @noButton b))
                     (let (t (standard-cocoa-textfield '(50 66 200 22)))
-		    	 (t setStringValue:"")
+		    	         (t setStringValue:"")
                          (v addSubview:t)
                          (set @englishText t))
                     (let (t (standard-cocoa-textfield '(50 26 200 22)))
-		    	 (t setStringValue:"")
+		    	         (t setStringValue:"")
                          (v addSubview:t)
                          (set @japaneseText t))
                     (w setContentView:v))
@@ -48,6 +48,7 @@
                (set @window w)
                (w makeKeyAndOrderFront:self))
 	           (set @words (Words wordsWithResorceFile:"words" ofType:"txt"))
+	           (@words sortByNg)
                (@englishText setStringValue:(((@words top) car) stringValue))
           self)
 
@@ -55,7 +56,8 @@
             (@words writeToResorceFile:"words" ofType:"txt")
     	    (@words next)
     	    (if (@words isEnd)
-    	        (then nil)
+    	        (then
+    	         (self terminate:nil))
     	        (else 
                  (@englishText setStringValue:(((@words top) car) stringValue))
     	            (@japaneseText setStringValue:"")

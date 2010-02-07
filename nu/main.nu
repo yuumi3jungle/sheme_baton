@@ -14,7 +14,7 @@
           (build-menu default-application-menu "WordsApp")
           (set $random ((WordsAppWindowController alloc) init)))
      (imethod (BOOL) applicationShouldTerminateAfterLastWindowClosed: (id) theApplication is
-         1)
+          1)
 )
 
 ;; install the delegate and keep a reference to it since the application won't retain it.
