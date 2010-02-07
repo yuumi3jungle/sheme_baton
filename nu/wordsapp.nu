@@ -85,7 +85,7 @@
           	        (then
           	            (self terminate:nil))
           	        (else 
-                        (@englishText setStringValue:(((words top) car) stringValue))
+                            (@englishText setStringValue:(((words top) car) stringValue))
           	            (@japaneseText setStringValue:"")
           	            (@yesButton setEnabled:nil)
           	            (@noButton  setEnabled:nil))))))
