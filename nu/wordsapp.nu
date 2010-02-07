@@ -1,14 +1,22 @@
-;; create a standard button
 (function standard-cocoa-button (frame)
      (((NSButton alloc) initWithFrame:frame)
       set: (bezelStyle:NSRoundedBezelStyle)))
 
-;; create a standard textfield
 (function standard-cocoa-textfield (frame)
      (((NSTextField alloc) initWithFrame:frame)
       set: (bezeled:0 editable:0 alignment:NSLeftTextAlignment drawsBackground:1)))
 
-;; define the window controller class
+(macro initEvent (*body)
+    `(progn (set @eventCountinuation ((NSMutableDictionary alloc) init))
+            ,@*body))
+
+(macro doEvent (name *params)
+    `((@eventCountinuation valueForKey:,(name stringValue)) ,@*params))
+
+(macro whenEvent (name args *body)
+    `(@eventCountinuation setValue:(do ,args ,@*body) forKey:,(name stringValue)))
+
+
 (class WordsAppWindowController is NSObject
      (ivars)
      
@@ -47,25 +55,29 @@
                (w center)
                (set @window w)
                (w makeKeyAndOrderFront:self))
-          (self main)
+          (self procedure)
           self)
 
      
-     (- check:sender is (@check_proc))
+     (- check:sender is (doEvent checkButtonPush))
 
-     (- yes:sender is (@answer_proc t))
-	
-     (- no:sender is (@answer_proc nil))
+     (- yes:sender is (doEvent answerButtonPush t))
+
+     (- no:sender is (doEvent answerButtonPush nil))
       	
-     (- main is
+     (- procedure is
         (let ((words (Words wordsWithResorceFile:"words" ofType:"txt")))
-             (words sortByNg)
-             (@englishText setStringValue:(((words top) car) stringValue))
-             (set @check_proc (do ()
+
+             (initEvent
+                 (words sortByNg)
+                 (@englishText setStringValue:(((words top) car) stringValue)))
+             
+             (whenEvent checkButtonPush () 
           	    (@japaneseText setStringValue:(((words top) cadr) stringValue))
      	        (@yesButton setEnabled:t)
-     	        (@noButton  setEnabled:t)))
-             (set @answer_proc (do (yn)
+     	        (@noButton  setEnabled:t))
+             
+             (whenEvent answerButtonPush (yn)
                 (if yn (then (words setOk)) (else (words setNg)))
                 (words writeToResorceFile:"words" ofType:"txt")
           	    (words next)
@@ -76,7 +88,5 @@
                         (@englishText setStringValue:(((words top) car) stringValue))
           	            (@japaneseText setStringValue:"")
           	            (@yesButton setEnabled:nil)
-          	            (@noButton  setEnabled:nil)))))))
-
-     
+          	            (@noButton  setEnabled:nil))))))
 )
